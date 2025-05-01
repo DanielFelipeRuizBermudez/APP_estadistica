@@ -22,6 +22,8 @@ from sklearn.impute import SimpleImputer
 from prince import MCA
 from collections import defaultdict
 from datetime import datetime
+from sklearn.metrics import roc_auc_score
+
 
 # Configuración de la página
 st.set_page_config(page_title="ReDim - Análisis Multivariado y Métodos Predictivos", layout="wide")
@@ -261,11 +263,11 @@ if uploaded_file is not None:
                             try:
                                 y_pred_proba = model.predict_proba(X_test)[:, 1]
                                 auc_score = roc_auc_score(y_test, y_pred_proba)
-        
+                    
                                 st.write("### Área bajo la Curva ROC (AUC)")
                                 st.metric(label="AUC", value=f"{auc_score:.4f}")
-        
-                                fig, ax = plt.subplots(figsize=(8,6))
+                    
+                                fig, ax = plt.subplots(figsize=(8, 6))
                                 fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
                                 ax.plot(fpr, tpr, label=f"AUC = {auc_score:.2f}")
                                 ax.plot([0, 1], [0, 1], 'k--', lw=2)
@@ -274,10 +276,9 @@ if uploaded_file is not None:
                                 ax.set_title('Curva ROC')
                                 ax.legend(loc="lower right")
                                 st.pyplot(fig)
-        
+                    
                             except Exception as e:
                                 st.warning(f"No se pudo calcular la Curva ROC: {e}")
-        
                     if hasattr(model, 'coef_'):
                         st.write("### Coeficientes Beta (β)")
                         coef_df = pd.DataFrame({
